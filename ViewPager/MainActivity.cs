@@ -1,60 +1,45 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.OS;
-using Android.Runtime;
-using Android.Support.Design.Widget;
-using Android.Support.V7.App;
-using Android.Views;
-using Android.Widget;
+using ViewPager.Adapters;
+using V4 = Android.Support.V4;
+using V7 = Android.Support.V7.App;
 
 namespace ViewPager
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    public class MainActivity : V7.AppCompatActivity
     {
+        private ViewPagerAdapter adapter;
+        private V4.View.ViewPager viewPager;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
-
-            Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
-            SetSupportActionBar(toolbar);
-
-            FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
-            fab.Click += FabOnClick;
+            InitializeUIRef();
+            SetUpViewPagerAdapter();
         }
 
-        public override bool OnCreateOptionsMenu(IMenu menu)
+        private void InitializeUIRef()
         {
-            MenuInflater.Inflate(Resource.Menu.menu_main, menu);
-            return true;
+            viewPager = FindViewById<V4.View.ViewPager>(Resource.Id.vp_pager);
         }
 
-        public override bool OnOptionsItemSelected(IMenuItem item)
+        private void SetUpViewPagerAdapter()
         {
-            int id = item.ItemId;
-            if (id == Resource.Id.action_settings)
-            {
-                return true;
-            }
+            adapter = new ViewPagerAdapter();
+            viewPager.Adapter = adapter;
 
-            return base.OnOptionsItemSelected(item);
+            var paddingDp = 40;
+            //var pageMargin = 20;
+            int px = DpPxConverter.dpToPx(paddingDp);
+            viewPager.SetPadding(px, 0, px, 0);
+            viewPager.SetClipToPadding(false);
+            viewPager.OffscreenPageLimit = 5;
+            //viewPager.PageMargin = DpPxConverter.dpToPx(pageMargin);
+            viewPager.SetPageTransformer(false, new CarouselTransformer(this, paddingDp));
         }
 
-        private void FabOnClick(object sender, EventArgs eventArgs)
-        {
-            View view = (View)sender;
-            Snackbar.Make(view, "Replace with your own action", Snackbar.LengthLong)
-                .SetAction("Action", (Android.Views.View.IOnClickListener)null).Show();
-        }
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
-        {
-            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
-            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 }
 
