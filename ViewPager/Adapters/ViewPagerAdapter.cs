@@ -23,7 +23,7 @@ namespace ViewPager.Adapters
             return view == @object;
         }
 
-        public override Java.Lang.Object InstantiateItem(View container, int position)
+        public override Java.Lang.Object InstantiateItem(ViewGroup container, int position)
         {
             var view = LayoutInflater.From(container.Context).Inflate(Resource.Layout.ViewPagerCellLayout, null, false);
             view.Tag = position;
@@ -37,7 +37,7 @@ namespace ViewPager.Adapters
             return view;
         }
 
-        public override void DestroyItem(View container, int position, Java.Lang.Object @object)
+        public override void DestroyItem(ViewGroup container, int position, Java.Lang.Object @object)
         {
             var viewPager = container.JavaCast<V4.View.ViewPager>();
             viewPager.RemoveView(@object as View);
